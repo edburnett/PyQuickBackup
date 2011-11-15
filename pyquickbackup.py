@@ -6,7 +6,7 @@
 
 
 # import some shit
-from tarfile import *
+import tarfile, re
 from sys import exit
 
 
@@ -24,8 +24,12 @@ def welcome_help():
 def config_parse():
 
     configlist = []     # start with empty lists
+    global includes
     includes = []
+    global excludes
     excludes = []
+    global excludes_corrected
+    excludes_corrected = []
 
     try:
         # open config file
@@ -53,6 +57,11 @@ def config_parse():
         includes.remove('[includes]')
         excludes.remove('[excludes]')
 
+        # strip the first / character from the excluded dir(s)
+        for x in excludes:
+            if x[0] == "/":
+                item = x[1:]
+                excludes_corrected.append(item)
 
 
     # throw error and exit if no config file is found
@@ -65,8 +74,16 @@ def config_parse():
 # compresses and creates tar archive
 def create_archive():
 
-    pass
+    def filtered(info):
+        if info.name in excludes_corrected:
+            return None
+        print(info.name)
+        return info
 
+    tar = tarfile.open("etc.tar.bz2", "w:bz2")
+    for name in includes:
+        tar.add(name, filter=filtered)
+    tar.close()
 
 
 

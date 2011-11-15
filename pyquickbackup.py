@@ -5,9 +5,10 @@
 # for Python 3.x
 
 
+# import some shit
 from tarfile import *
-import re
 from sys import exit
+
 
 
 # show useless info

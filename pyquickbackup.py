@@ -7,6 +7,7 @@
 
 from tarfile import *
 import re
+from sys import exit
 
 
 
@@ -19,7 +20,9 @@ def welcome_help():
 
 def config_parse():
 
-    configlist = []     # start with an empty list
+    configlist = []     # start with empty lists
+    includes = []
+    excludes = []
 
     try:
         configfile = open('pyquickbackup.conf', 'r')            # opens the config file, if it exists
@@ -31,14 +34,24 @@ def config_parse():
                 continue
             else:
                 configlist.append(line.rstrip())                # add remaining lines to configlist list
+        
+        in_i = configlist.index('[includes]')                   # get index of [includes]
+        ex_i = configlist.index('[excludes]')                   # get index of [excludes]
 
-        print(configlist)
+        includes = configlist[in_i:ex_i]
+        excludes = configlist[ex_i:]
+
+        includes.remove('[includes]')
+        excludes.remove('[excludes]')
+
+
 
 
 
     except (IOError, UnboundLocalError):                        # if .conf file not found, throw error
         print("- Config file not found!")
         print("- Set up pyquickbackup.conf before running.\n")
+        exit()
     
     
 

@@ -6,8 +6,9 @@
 
 
 # import some shit
-import tarfile, re, datetime
+import tarfile, re, datetime, shutil, os
 from sys import exit
+#from os import remove, path
 
 
 
@@ -28,6 +29,8 @@ def config_parse():
     includes = []
     global excludes
     excludes = []
+    global remotes
+    remotes = []
     global excludes_corrected
     excludes_corrected = []
 
@@ -35,25 +38,28 @@ def config_parse():
         # open config file
         configfile = open('pyquickbackup.conf', 'r')
         
-        # remove comments, empty lines from config and append to list, stripping newline chars
+        # strip comments, empty lines, newlines from config file and append to 'configlist' list
         for line in configfile:
             if re.compile('^#').search(line) is not None:
                 continue
             if not line.strip():
                 continue
             else:
-                configlist.append(line.rstrip())         # line.rstrip() removed
+                configlist.append(line.rstrip())
         
 
         # get index of include/exclude section designators
+        re_i = configlist.index('[remotes]')
         in_i = configlist.index('[includes]')                   
         ex_i = configlist.index('[excludes]')                   
 
-        # create lists for includes and excludes
+        # create lists for remotes, includes, and excludes
+        remotes = configlist[re_i:in_i]
         includes = configlist[in_i:ex_i]
         excludes = configlist[ex_i:]
 
-        # remove the actual include/exclude section designators
+        # now discard the actual configuration section designators
+        remotes.remove('[remotes]')
         includes.remove('[includes]')
         excludes.remove('[excludes]')
 
@@ -94,6 +100,22 @@ def create_archive():
     for name in includes:
         tar.add(name, filter=filtered)
     tar.close()
+
+    # copy archive to location(s) specified under [remotes]
+    for dest in remotes:
+        if remotes == None:
+            print("No remotes to copy to.")
+            break
+        else:
+            print("Copying archive to specified remote: ", dest)
+            shutil.copy2(filename, dest)
+
+
+    # finally, delete the temp archive
+    if os.path.exists(filename) == True:
+        os.remove(filename)
+        if os.path.exists(filename) == False:
+            print("Temp. File(s) successfully removed.")
 
 
 

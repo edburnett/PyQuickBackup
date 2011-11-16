@@ -80,7 +80,7 @@ def config_parse():
         exit()
     
     
-# compresses and creates tar archive
+# compresses and creates tar archive, then moves to remote(s)
 def create_archive():
     
     # create object for getting current date/time

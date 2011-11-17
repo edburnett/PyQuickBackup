@@ -1,6 +1,7 @@
-Add logging.
+Add logging. create log and then add it to the archive just before moving/deleting it?
 Create object-oriented version/branch.
 Add more error-checking
+Add option to export and backup a list of explicitly-installed programs (pacman, portage, etc).
 check to see if it's running as root/sudo, if not, notify and exit
 add command-line options (?), and options to enable/disble copying
 add optional GUI (?)

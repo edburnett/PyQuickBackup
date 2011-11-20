@@ -6,7 +6,7 @@
 
 
 # import some shit
-import tarfile, re, datetime, shutil, os
+import tarfile, re, datetime, shutil, os, subprocess
 from sys import exit
 #from os import remove, path
 
@@ -83,22 +83,30 @@ def config_parse():
 # compresses and creates tar archive, then moves to remote(s)
 def create_archive():
     
+    
+    # run pacman to get list of installed packages (archlinux-specific)
+    subprocess.call("pacman " + "-Qe > mypackages.list", shell=True)
+    
+    
     # create object for getting current date/time
     now = datetime.datetime.now()
 
     # create filename for archive based on date and time
     filename = now.strftime("%y-%m-%d_%I.%M") + ".tar.bz2"
 
-   
+    # create filtered keyword; print each filename backed up
     def filtered(info):
         if info.name in excludes_corrected:
             return None
         print(info.name)
         return info
 
+    
+    # create archive
     tar = tarfile.open(filename, "w:bz2")
     for name in includes:
         tar.add(name, filter=filtered)
+    tar.add('mypackages.list')      # add the pacman package list created above
     tar.close()
 
     # copy archive to location(s) specified under [remotes]
@@ -111,9 +119,10 @@ def create_archive():
             shutil.copy2(filename, dest)
 
 
-    # finally, delete the temp archive
+    # finally, delete the temp files
     if os.path.exists(filename) == True:
-        os.remove(filename)
+        os.remove(filename)                 # remove the archive
+        os.remove('mypackages.list')        # remove the pacman packages list
         if os.path.exists(filename) == False:
             print("Temp. File(s) successfully removed.")
 

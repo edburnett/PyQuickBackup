@@ -7,15 +7,26 @@ import tarfile, re, datetime, shutil, os, subprocess
 from sys import exit
 
 
-class config_loader():
+class pqb():
     
     def __init__(self):
-        # setup some initial empty lists for us in parsing    
+        # setup some empty lists on instantiation, 
+        # for use in config file filtering/parsing    
         self.configlist = []
         self.excludes_corrected = []
         self.remotes = []
         self.excludes = []
         self.includes = []
+
+
+    # method to check if script is being run as root/sudo. 
+    # If not, then exit.
+    def isroot(self):
+        user = os.getuid()
+        if user != 0:
+            print("- Must be run as root/sudo.")
+            print("- Exiting.\n")
+            exit()
     
 
     # method to load the config file
@@ -72,11 +83,15 @@ class config_loader():
 
 
 
-
 def main():
+    
+    # create instance of our class
+    config = pqb()
+    
+    # check if root/sudo
+    config.isroot()
 
-    config = config_loader()
-
+    # load config file, exit if not found
     try:
         config.loadconf('pqb.conf')
         print("- Found config file.")
@@ -85,8 +100,12 @@ def main():
         print("- Exiting.\n")
         exit()
     
+    # parse config file
     config.parseconf()
+    
+    # close config file
     config.closeconf()
+
 
 
 if __name__ == "__main__":

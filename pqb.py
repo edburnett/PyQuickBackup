@@ -10,28 +10,31 @@ from sys import exit
 class config_loader():
     
     def __init__(self):
-    
+        # setup some initial empty lists for us in parsing    
         self.configlist = []
-        #self.includes = []
-        #self.excludes = []
-        #self.remotes = []
         self.excludes_corrected = []
+        self.remotes = []
+        self.excludes = []
+        self.includes = []
     
 
-    # load the config file
+    # method to load the config file
     def loadconf(self, configfilename):
         self.configfile = open(configfilename, 'r')
 
-    # close the config file
+
+    # method to close the config file
     def closeconf(self):
         self.configfile.close()
-    
-    # parse the config file
+
+
+    # method to parse the config file
     def parseconf(self):
         print("- Parsing config file.")
 
         # strip comments, empty lines, newlines
         for line in self.configfile:
+            # ignore any comment lines beginning with "#"
             if re.compile('^#').search(line) is not None:
                 continue
             if not line.strip():
@@ -47,17 +50,17 @@ class config_loader():
         ex_i = self.configlist.index('[excludes]')
 
         # create lists for remotes, includes, and excludes
-        remotes = self.configlist[re_i:in_i]
-        includes = self.configlist[in_i:ex_i]
-        excludes = self.configlist[ex_i:]
+        self.remotes = self.configlist[re_i:in_i]
+        self.includes = self.configlist[in_i:ex_i]
+        self.excludes = self.configlist[ex_i:]
 
         # now discard the actual config section designators
-        remotes.remove('[remotes]')
-        includes.remove('[includes]')
-        excludes.remove('[excludes]')
+        self.remotes.remove('[remotes]')
+        self.includes.remove('[includes]')
+        self.excludes.remove('[excludes]')
 
-        # strip the first "/" character from the excluded dir(s)
-        for x in excludes:
+        # strip the first "/" character from the excluded dir(s) - makes tarfile module behave
+        for x in self.excludes:
             if (x[0] == "/") and (x[-1] == "/"):
                 item = x[1:]
                 item = item[:-1]

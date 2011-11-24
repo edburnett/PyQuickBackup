@@ -6,10 +6,11 @@ http://github.com/edburnett/pyquickbackup
 
 What is PyQuickBackup?
 ----------------------
-PyQuickBackup (pqb.py) is a simple tool for file-level backups on Linux
+PyQuickBackup (pqb.py) is just a simple tool for file-level backups on Linux
 workstations. It creates a tar archive (with bz2 compression) of any directories 
 and files you specify in the configuration file (pqb.conf), then moves/copies the
-archive to any number of mountpoint(s) or directories.
+archive to any number of directories or mount-points (such as an external drive or
+USB flash stick).
 
 It was built for Python 3.x but could be easily adapted for Python 2.x with 
 a few changes.

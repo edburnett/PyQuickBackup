@@ -18,7 +18,8 @@ a few changes.
 
 How do I use PyQuickBackup?
 ---------------------------
-1. Edit the pqb.conf file to your liking with your favorite text editor.
+1. Edit the pqb.conf file to your liking with your favorite text editor, 
+specifying any directories you wish to include or exlcude in the appropriate sections.
 2. Run it from a root/superuser account, or use sudo:
 
     $ sudo python3 pqb.py

@@ -9,4 +9,7 @@ from that distro's package manager, test on popular distros (arch, mint, ubuntu,
 centos).
 
 Add command-line options (?), and options to enable/disble automatic copying/moving
-of archive to remote(s).
+of archive to remote(s)
+
+Always set working directory to where the program resides (otherwise, if called from another dir,
+it does not see the .conf file)..

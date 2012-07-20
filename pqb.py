@@ -11,8 +11,8 @@ class pqb():
     
     def __init__(self):
         
-        # set version number
-        self.version = "0.1"
+        # set version/release date
+        self.release = "07-20-2012"
         
         # archive filename variable
         self.filename = ""
@@ -27,9 +27,10 @@ class pqb():
 
     
     def startup(self):
+        """ Print welcome message, generates timestamp """
 
         # print welcome message
-        print("PyQuickBackup " + self.version)
+        print("PyQuickBackup release " + self.release)
         print("Simple tool for archiving & backing up files.\n")
 
         # get system's current date/time
@@ -40,9 +41,8 @@ class pqb():
 
 
 
-    # method to check if script is being run as root/sudo. 
-    # If not, then exit.
     def isroot(self):
+        """ Check to see if user is root """
         user = os.getuid()
         if user != 0:
             print("- ERROR: Must be run as root/sudo.")
@@ -50,18 +50,18 @@ class pqb():
             exit()
     
 
-    # method to load the config file
     def loadconf(self, configfilename):
+        """ Load the config file. Accepts config filename. """
         self.configfile = open(configfilename, 'r')
 
 
-    # method to close the config file
     def closeconf(self):
+        """ Close the config file """
         self.configfile.close()
 
 
-    # method to parse the config file
     def parseconf(self):
+        """ Parse the config file """
         print("- Parsing config file.")
 
         # strip comments, empty lines, newlines
@@ -103,12 +103,16 @@ class pqb():
 
 
     def create_archive(self):
+        """ Creates the archive """
         
         # create filtered keyword; print each file/dir being added to archive
         def filtered(info):
             if info.name in self.excludes_corrected:
                 return None
-            print(info.name)
+            try:
+                print(info.name)
+            except UnicodeEncodeError:
+                pass
             return info
         
         # create the archive
@@ -134,8 +138,8 @@ class pqb():
 
 
                 
-    # method to delete the working/temp archive after copying to remote(s)    
     def del_archive(self):
+        """ Delete the working/temp archive after copying to remote(s). """
         
         # delete temp archive
         if os.path.exists(self.filename) == True:

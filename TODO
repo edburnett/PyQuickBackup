@@ -13,3 +13,8 @@ of archive to remote(s)
 
 Always set working directory to where the program resides (otherwise, if called from another dir,
 it does not see the .conf file)..
+
+Do not force root. Do error checking for permissions and skipping files
+or logging errors.
+
+Allow choosing between creating gzip/zip/bz2 etc archive types.
